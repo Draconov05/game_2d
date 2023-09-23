@@ -45,9 +45,14 @@ public class Soldier : MonoBehaviour
             armor += 2;
         }
 
-        if(Input.GetKeyUp("w") || Input.GetKeyUp("up")){
+        if(Input.GetKey("w") || Input.GetKey("up")){
 
-            body.AddForce(Vector2.up * 20);
+            transform.position = new Vector3(transform.position.x, transform.position.y + 0.015f);
+
+        }else
+        if(Input.GetKey("s") || Input.GetKey("down")){
+
+            transform.position = new Vector3(transform.position.x, transform.position.y - 0.015f);
 
         }else
         if(Input.GetKeyDown("d") || Input.GetKeyDown("right")){
