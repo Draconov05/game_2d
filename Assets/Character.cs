@@ -28,9 +28,13 @@ public class Character : MonoBehaviour
     void Update()
     {
 
-        CharHealth.text = "Life: " + life + "%";
-
-        CharArmor.text = "Armor: " + armor + "%";
+        if (CharHealth != null){
+            CharHealth.text = "Life: " + life + "%";
+        }
+        
+        if (CharArmor != null){
+            CharArmor.text = "Armor: " + armor + "%";
+        }
 
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
