@@ -13,6 +13,8 @@ public class Soldier : MonoBehaviour
 
     public GameObject CrossHair; 
 
+    public float CrossHairDistance;
+
     private Rigidbody2D body;
 
     private float life = 100;
@@ -55,9 +57,7 @@ public class Soldier : MonoBehaviour
             if(transform.localScale != new Vector3(1, 1, 1)){
                 transform.localScale = new Vector3(1, 1, 1);
             }
-
         }
-
 
         if(armor < 100){
             armor += 0.02f;
@@ -178,14 +178,13 @@ public class Soldier : MonoBehaviour
     Vector3 moduloMouse(Vector3 mousePosition){
 
         Vector3 mousePositionLocal = mousePosition;
+        Vector2 mouseRelativo = mousePositionLocal - transform.position;
 
-        double modulo = Math.Sqrt(Math.Pow(transform.position.x - mousePosition.x,2) + Math.Pow(transform.position.y - mousePosition.y,2));
-
-        if(modulo > 3.20d || modulo < 3.15d){
-            float proporcao =  3.11f / (float) modulo;
-            mousePositionLocal = new Vector3(transform.position.x - ((transform.position.x - mousePosition.x) * proporcao),transform.position.y - ((transform.position.y - mousePosition.y) * proporcao));
-        }
-            
+        float modulo = mouseRelativo.magnitude;
+        
+        if (modulo > CrossHairDistance)
+            mousePositionLocal = transform.position + (Vector3)(CrossHairDistance * mouseRelativo / modulo);
+        
         return mousePositionLocal;
     }
 
