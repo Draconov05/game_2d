@@ -1,0 +1,9 @@
+Build/
+Library/
+Logs/
+Packages/
+ProjectSettings/
+Temp/
+UserSettings/
+
+*.meta
