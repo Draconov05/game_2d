@@ -15,8 +15,10 @@ public class Soldier : MonoBehaviour
 
     private Rigidbody2D body;
 
-    private int life = 100;
-    private int armor = 100;
+    private float life = 100;
+    private float armor = 100;
+
+    private float walkSpeed = 0.02f;
 
     // Start is called before the first frame update
     void Start()
@@ -29,11 +31,11 @@ public class Soldier : MonoBehaviour
     void Update()
     {
         if (CharHealth != null){
-            CharHealth.text = "Life: " + life + "%";
+            CharHealth.text = "Life: " + Math.Round(life, 0) + "%";
         }
         
         if (CharArmor != null){
-            CharArmor.text = "Armor: " + armor + "%";
+            CharArmor.text = "Armor: " + Math.Round(armor, 0) + "%";
         }
         
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -58,7 +60,7 @@ public class Soldier : MonoBehaviour
 
 
         if(armor < 100){
-            armor += 2;
+            armor += 0.02f;
         }
 
         if(Input.GetKeyDown("d") || Input.GetKeyDown("right") || Input.GetKeyDown("w") || Input.GetKeyDown("up") || Input.GetKeyDown("s") || Input.GetKeyDown("down") || Input.GetKeyDown("a") || Input.GetKeyDown("left") ){ //walk animation
@@ -73,8 +75,6 @@ public class Soldier : MonoBehaviour
         }else
         if((Input.GetKey("w") || Input.GetKey("up")) && (Input.GetKey("d") || Input.GetKey("right"))){ // top right
 
-            Debug.Log("top right");
-
             if(transform.localScale != new Vector3(1, 1, 1)){
                 transform.localScale = new Vector3(1, 1, 1);
             }
@@ -83,13 +83,11 @@ public class Soldier : MonoBehaviour
                 anim.Play("walk");
             }
 
-            transform.position = new Vector3(transform.position.x + 0.015f, transform.position.y + 0.015f);
+            transform.position = new Vector3(transform.position.x + walkSpeed, transform.position.y + walkSpeed);
 
         }else
         if((Input.GetKey("w") || Input.GetKey("up")) && (Input.GetKey("a") || Input.GetKey("left"))){ // top left
 
-            Debug.Log("top left");
-
             if(transform.localScale != new Vector3(-1, 1, 1)){
                 transform.localScale = new Vector3(-1, 1, 1);
             }
@@ -98,23 +96,19 @@ public class Soldier : MonoBehaviour
                 anim.Play("walk");
             }
 
-            transform.position = new Vector3(transform.position.x - 0.015f, transform.position.y + 0.015f);
+            transform.position = new Vector3(transform.position.x - walkSpeed, transform.position.y + walkSpeed);
 
         }else
         if(Input.GetKey("w") || Input.GetKey("up")){ //top
-
-            Debug.Log("top");
 
             if(anim != null && !anim.GetCurrentAnimatorStateInfo(0).IsName("walk")){
                 anim.Play("walk");
             }
 
-            transform.position = new Vector3(transform.position.x, transform.position.y + 0.015f);
+            transform.position = new Vector3(transform.position.x, transform.position.y + walkSpeed);
 
         }else
         if((Input.GetKey("s") || Input.GetKey("down")) && (Input.GetKey("d") || Input.GetKey("right"))){ // down right
-        
-            Debug.Log("down right");
 
             if(transform.localScale != new Vector3(1, 1, 1)){
                 transform.localScale = new Vector3(1, 1, 1);
@@ -124,12 +118,10 @@ public class Soldier : MonoBehaviour
                 anim.Play("walk");
             }
 
-            transform.position = new Vector3(transform.position.x + 0.015f, transform.position.y - 0.015f);
+            transform.position = new Vector3(transform.position.x + walkSpeed, transform.position.y - walkSpeed);
 
         }else
         if((Input.GetKey("s") || Input.GetKey("down")) && (Input.GetKey("a") || Input.GetKey("left"))){ // down left
-
-            Debug.Log("down left");
 
             if(transform.localScale != new Vector3(-1, 1, 1)){
                 transform.localScale = new Vector3(-1, 1, 1);
@@ -139,18 +131,16 @@ public class Soldier : MonoBehaviour
                 anim.Play("walk");
             }
 
-            transform.position = new Vector3(transform.position.x - 0.015f, transform.position.y - 0.015f);
+            transform.position = new Vector3(transform.position.x - walkSpeed, transform.position.y - walkSpeed);
 
         }else
         if(Input.GetKey("s") || Input.GetKey("down")){
-
-            Debug.Log("down");
 
             if(anim != null && !anim.GetCurrentAnimatorStateInfo(0).IsName("walk")){
                 anim.Play("walk");
             }
 
-            transform.position = new Vector3(transform.position.x, transform.position.y - 0.015f);
+            transform.position = new Vector3(transform.position.x, transform.position.y - walkSpeed);
 
         }else
         if(Input.GetKey("d") || Input.GetKey("right")){
@@ -163,7 +153,7 @@ public class Soldier : MonoBehaviour
                 anim.Play("walk");
             }
 
-            transform.position = new Vector3(transform.position.x + 0.015f, transform.position.y);
+            transform.position = new Vector3(transform.position.x + walkSpeed, transform.position.y);
         }else
         if(Input.GetKey("a") || Input.GetKey("left")){
 
@@ -175,7 +165,7 @@ public class Soldier : MonoBehaviour
                 anim.Play("walk");
             }
 
-            transform.position = new Vector3(transform.position.x - 0.015f, transform.position.y);
+            transform.position = new Vector3(transform.position.x - walkSpeed, transform.position.y);
         }else
         if(Input.GetMouseButton(0)){
             anim.Play("fire");
@@ -197,6 +187,24 @@ public class Soldier : MonoBehaviour
         }
             
         return mousePositionLocal;
+    }
+
+    public void getHited(float val){
+
+        float exced;
+
+        Debug.Log("attack");
+
+        if(armor > 0){
+            armor -= val;
+            if(val > armor) {
+                armor = 0;
+                exced = val - armor;
+                life -= exced;
+            }
+        }else{
+            life -= val;
+        }
     }
 
 }
