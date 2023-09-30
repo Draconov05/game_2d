@@ -38,12 +38,12 @@ public class BaseWeapon : MonoBehaviour
 
     public void fire()
     {
-        this.bullet = mag_bullets[0];
-        Debug.Log(this.bullet);
-        base_bullet s2 = this.bullet.GetComponent<base_bullet>();
-        s2.fire();
-        mag_bullets.RemoveAt(0);
-        //anim.Play("fire");
+        // this.bullet = mag_bullets[0];
+        // Debug.Log(this.bullet);
+        // base_bullet s2 = this.bullet.GetComponent<base_bullet>();
+        // s2.fire();
+        // mag_bullets.RemoveAt(0);
+        // //anim.Play("fire");
     }
 
 }

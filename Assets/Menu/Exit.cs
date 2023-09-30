@@ -7,6 +7,6 @@ public class Exit : MonoBehaviour
 {
     public void endGame() {  
         SceneManager.LoadSceneAsync("GameOver"); 
-        SceneManager.UnloadScene("Game");  
+        SceneManager.UnloadSceneAsync("Game");  
     }
 }

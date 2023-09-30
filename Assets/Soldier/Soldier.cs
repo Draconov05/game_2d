@@ -22,6 +22,10 @@ public class Soldier : MonoBehaviour
 
     private float walkSpeed = 0.02f;
 
+    public GameObject bullet;
+
+    private base_bullet bulletScript;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -168,11 +172,17 @@ public class Soldier : MonoBehaviour
             transform.position = new Vector3(transform.position.x - walkSpeed, transform.position.y);
         }else
         if(Input.GetMouseButton(0)){
-            anim.Play("fire");
-        }else
-        if(Input.GetKeyUp(KeyCode.LeftControl)){
-            anim.Play("idle");
+            if(anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "fire"){
+                shoot();
+            }
         }
+    }
+
+    private void shoot(){
+        GameObject bullet_inner = Instantiate(bullet, transform.position, CrossHair.transform.rotation);
+        bulletScript = bullet_inner.GetComponent<base_bullet>();
+        bulletScript.fire(transform.localScale.x);
+        anim.Play("fire");
     }
 
     Vector3 moduloMouse(Vector3 mousePosition){
@@ -191,8 +201,6 @@ public class Soldier : MonoBehaviour
     public void getHited(float val){
 
         float exced;
-
-        Debug.Log("attack");
 
         if(armor > 0){
             armor -= val;
