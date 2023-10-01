@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DefaultEnemy : MonoBehaviour
 {
@@ -17,10 +19,33 @@ public class DefaultEnemy : MonoBehaviour
     private float tempoDecorrido = 0.0f;
 
     private float tempoDeEspera = 2.0f;
+
+    private float life = 150;
+
+    public Text EnemyHealth;
+
+    private GameObject ngo;
     
     // Start is called before the first frame update
     void Start()
     {
+
+        ngo = new GameObject("EnemyHealth");
+
+        if(ngo){
+            ngo.transform.SetParent(transform);
+
+            ngo.transform.position = new Vector3(transform.position.x,transform.position.y + 2,transform.position.z);
+
+            EnemyHealth = ngo.AddComponent<Text>();
+        }
+
+        
+
+        if (EnemyHealth != null){
+            EnemyHealth.text = "" + Math.Round(life, 0) + "%";
+        }
+
         anim = GetComponent<Animator>();
 
         anim.Play("zombie_walk");
@@ -29,6 +54,17 @@ public class DefaultEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if(ngo != null){
+            ngo.transform.position = new Vector3(transform.position.x,transform.position.y + 2,transform.position.z);
+
+            if (EnemyHealth != null){
+                EnemyHealth.text = "" + Math.Round(life, 0) + "%";  
+            }
+
+            Debug.Log(ngo.transform.position);
+        }
+        
         if (!esperaConcluida)
         {
             // Incrementa o tempo decorrido
@@ -88,8 +124,6 @@ public class DefaultEnemy : MonoBehaviour
 
     void attack()
     {
-        Debug.Log("\n");
-        
         anim.Play("attack");
 
         while(anim.GetCurrentAnimatorClipInfo(0)[0].clip.name == "attack");
@@ -103,5 +137,19 @@ public class DefaultEnemy : MonoBehaviour
             }
             anim.Play("walk");
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+
+        if(life <= 0){
+            Destroy(gameObject);
+        }
+
+        if(col.gameObject.tag == "556"){
+            life -= 10;
+        }
+        
+        
     }
 }

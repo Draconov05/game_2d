@@ -5,3 +5,5 @@ Packages/
 ProjectSettings/
 Temp/
 UserSettings/
+
+*.meta
