@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,7 +28,7 @@ public class base_bullet : MonoBehaviour
     {
         if(direction != 0){
             if(!collided){
-                transform.position += new Vector3((speed * direction) * Time.deltaTime, 0, 0);
+                transform.position += new Vector3(((speed * direction) * Time.deltaTime) * (float) Math.Cos(transform.rotation.z), ((speed) * Time.deltaTime) * (float) Math.Sin(transform.rotation.z), 0);
             }
         }
         

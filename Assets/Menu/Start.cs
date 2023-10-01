@@ -12,6 +12,6 @@ public class Start : MonoBehaviour
 
     public void setFullscreen()
     {
-        Screen.SetResolution(640, 275, !Screen.fullScreen);
+        Screen.SetResolution(1920, 1080, !Screen.fullScreen);
     }
 }
