@@ -9,4 +9,9 @@ public class Exit : MonoBehaviour
         SceneManager.LoadSceneAsync("GameOver"); 
         SceneManager.UnloadSceneAsync("Game");  
     }
+
+    public void reStart() {  
+        SceneManager.UnloadSceneAsync("GameOver"); 
+        SceneManager.LoadSceneAsync("Game");  
+    }
 }

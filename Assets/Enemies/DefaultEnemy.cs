@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class DefaultEnemy : MonoBehaviour
 {
-    public GameObject Player;
+    private GameObject Player;
 
     private Vector3 distance;
 
@@ -34,6 +34,8 @@ public class DefaultEnemy : MonoBehaviour
         EnemyHealthObj = Instantiate(EnemyHealthObj, transform.position, transform.rotation);
 
         canva = GameObject.FindGameObjectsWithTag("canvaCamera")[0];
+
+        Player = GameObject.FindGameObjectsWithTag("player")[0];
 
         EnemyHealthObj.transform.parent = canva.transform;
 
@@ -83,7 +85,7 @@ public class DefaultEnemy : MonoBehaviour
                 Destroy(EnemyHealthObj, 1.30f);
                 Destroy(gameObject, 1.30f);
             }   
-        }else if(esperaConcluida){
+        }else if(esperaConcluida && anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "attack"){
 
             distance = Player.transform.position - transform.position;
 
@@ -131,14 +133,11 @@ public class DefaultEnemy : MonoBehaviour
     void attack()
     {
         anim.Play("attack");
-
-        while(anim.GetCurrentAnimatorClipInfo(0)[0].clip.name == "attack");
-
         if(anim != null){
             if(Player != null){
                 player_script = Player.GetComponent<Soldier>();
                 if(player_script != null){
-                    player_script.getHited(25);
+                    player_script.getHited(20);
                 } 
             }
             anim.Play("walk");
@@ -149,7 +148,7 @@ public class DefaultEnemy : MonoBehaviour
     {
         if(life > 0){
             if(col.gameObject.tag == "556"){
-                life -= 10;
+                life -= 25;
             }
         }
     }
