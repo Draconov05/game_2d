@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class DefaultEnemy : MonoBehaviour
 {
-    public GameObject Player;
+    private GameObject Player;
 
     private Vector3 distance;
 
@@ -21,26 +21,31 @@ public class DefaultEnemy : MonoBehaviour
     private float tempoDeEspera = 2.0f;
 
     private float life = 150;
+    
+    public GameObject EnemyHealthObj;
 
-    public Text EnemyHealth;
+    private Text EnemyHealth;
 
-    private GameObject ngo;
+    private GameObject canva;
     
     // Start is called before the first frame update
     void Start()
     {
+        EnemyHealthObj = Instantiate(EnemyHealthObj, transform.position, transform.rotation);
 
-        ngo = new GameObject("EnemyHealth");
+        canva = GameObject.FindGameObjectsWithTag("canvaCamera")[0];
 
-        if(ngo){
-            ngo.transform.SetParent(transform);
+        Player = GameObject.FindGameObjectsWithTag("player")[0];
 
-            ngo.transform.position = new Vector3(transform.position.x,transform.position.y + 2,transform.position.z);
+        EnemyHealthObj.transform.parent = canva.transform;
 
-            EnemyHealth = ngo.AddComponent<Text>();
+        EnemyHealthObj.transform.localScale = new Vector3(1,1,1);
+
+        if(EnemyHealthObj){
+            EnemyHealthObj.transform.position = new Vector3(transform.position.x,transform.position.y + 1.5f,transform.position.z);
         }
 
-        
+        EnemyHealth = EnemyHealthObj.GetComponent<Text>();
 
         if (EnemyHealth != null){
             EnemyHealth.text = "" + Math.Round(life, 0) + "%";
@@ -55,14 +60,11 @@ public class DefaultEnemy : MonoBehaviour
     void Update()
     {
 
-        if(ngo != null){
-            ngo.transform.position = new Vector3(transform.position.x,transform.position.y + 2,transform.position.z);
-
+        if(EnemyHealthObj != null){
+            EnemyHealthObj.transform.position = new Vector3(transform.position.x,transform.position.y + 1.5f,transform.position.z);
             if (EnemyHealth != null){
                 EnemyHealth.text = "" + Math.Round(life, 0) + "%";  
             }
-
-            Debug.Log(ngo.transform.position);
         }
         
         if (!esperaConcluida)
@@ -77,7 +79,13 @@ public class DefaultEnemy : MonoBehaviour
             }
         }
 
-        if(esperaConcluida){
+        if(life <= 0){
+            if(anim != null){
+                anim.Play("death_01");
+                Destroy(EnemyHealthObj, 1.30f);
+                Destroy(gameObject, 1.30f);
+            }   
+        }else if(esperaConcluida && anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "attack"){
 
             distance = Player.transform.position - transform.position;
 
@@ -101,20 +109,20 @@ public class DefaultEnemy : MonoBehaviour
                 }
                 if(distance.x > 0){
                     transform.localScale = new Vector3(0.2f, 0.2f, 1);
-                    walk.x = transform.position.x + 0.015f;
+                    walk.x = transform.position.x + 0.005f;
                 }
 
                 if(distance.x < 0){
                     transform.localScale = new Vector3(-0.2f, 0.2f, 1);
-                    walk.x = transform.position.x - 0.015f;
+                    walk.x = transform.position.x - 0.005f;
                 }
 
                 if(distance.y > 0){
-                    walk.y = transform.position.y + 0.015f;
+                    walk.y = transform.position.y + 0.005f;
                 }
 
                 if(distance.y < 0){
-                    walk.y = transform.position.y - 0.015f;
+                    walk.y = transform.position.y - 0.005f;
                 }
 
                 transform.position = walk;
@@ -125,14 +133,11 @@ public class DefaultEnemy : MonoBehaviour
     void attack()
     {
         anim.Play("attack");
-
-        while(anim.GetCurrentAnimatorClipInfo(0)[0].clip.name == "attack");
-
         if(anim != null){
             if(Player != null){
                 player_script = Player.GetComponent<Soldier>();
                 if(player_script != null){
-                    player_script.getHited(25);
+                    player_script.getHited(20);
                 } 
             }
             anim.Play("walk");
@@ -141,15 +146,10 @@ public class DefaultEnemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-
-        if(life <= 0){
-            Destroy(gameObject);
+        if(life > 0){
+            if(col.gameObject.tag == "556"){
+                life -= 25;
+            }
         }
-
-        if(col.gameObject.tag == "556"){
-            life -= 10;
-        }
-        
-        
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement; 
 
 public class Soldier : MonoBehaviour
 {
@@ -211,6 +212,11 @@ public class Soldier : MonoBehaviour
             }
         }else{
             life -= val;
+        }
+
+        if(life < 0){
+            SceneManager.LoadSceneAsync("GameOver"); 
+            SceneManager.UnloadSceneAsync("Game");  
         }
     }
 
