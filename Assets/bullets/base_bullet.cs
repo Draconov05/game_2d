@@ -20,7 +20,8 @@ public class base_bullet : MonoBehaviour
 
     void Start()
     {
-        speed = (bullet_speed + bullet_speed_mod) * (float) 0.25;
+        speed = (bullet_speed + bullet_speed_mod) * (float) 0.025;
+        transform.position = new Vector3(transform.position.x, transform.position.y,0);
     }
 
     // Update is called once per frame
@@ -28,7 +29,7 @@ public class base_bullet : MonoBehaviour
     {
         if(direction != 0){
             if(!collided){
-                transform.position += new Vector3(((speed * direction) * Time.deltaTime) * (float) Math.Cos(transform.rotation.z), ((speed) * Time.deltaTime) * (float) Math.Sin(transform.rotation.z), 0);
+                transform.position += transform.right * speed;
             }
         }
         

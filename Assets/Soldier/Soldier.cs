@@ -9,6 +9,12 @@ public class Soldier : MonoBehaviour
 {
     private Animator anim;
 
+    public Animator Anim   // property
+    {
+        get { return anim; }
+        set { anim = value; }
+    }
+
     public GameObject CharHealthObj;
     private Text CharHealth;
     public GameObject CharArmorObj;
@@ -27,9 +33,9 @@ public class Soldier : MonoBehaviour
 
     private float walkSpeed = 0.02f;
 
-    public GameObject bullet;
+    public GameObject Weapon;
 
-    private base_bullet bulletScript;
+    private WeaponBarril weaponScript;
 
     private int score = 0;
 
@@ -188,24 +194,24 @@ public class Soldier : MonoBehaviour
             }
 
             transform.position = new Vector3(transform.position.x - walkSpeed, transform.position.y);
-        }else
-        if(Input.GetMouseButton(0)){
-            if(anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "fire"){
-                shoot();
-            }
         }
+        // else if(Input.GetMouseButton(0)){
+        //     if(anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "fire"){
+        //         shoot();
+        //     }
+        // }
     }
 
-    private void shoot(){
-        GameObject bullet_inner = Instantiate(bullet, new Vector3(transform.position.x + transform.localScale.x,transform.position.y, transform.position.z), CrossHair.transform.rotation);
-        float Zang = getBulletAngular();
-        bullet_inner.transform.eulerAngles = new Vector3(
-            bullet_inner.transform.eulerAngles.x,
-            bullet_inner.transform.eulerAngles.y,
-            Zang
-        );
-        bulletScript = bullet_inner.GetComponent<base_bullet>();
-        bulletScript.fire(transform.localScale.x);
+    public void shoot(){
+        Weapon = GameObject.FindGameObjectsWithTag("weapon")[0];
+
+        weaponScript = Weapon.GetComponent<WeaponBarril>();
+
+        var dir = CrossHair.transform.position - transform.position;
+        var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
+        weaponScript.fire(angle);
+
         anim.Play("fire");
     }
 
