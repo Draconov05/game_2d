@@ -9,8 +9,12 @@ public class Soldier : MonoBehaviour
 {
     private Animator anim;
 
-    public Text CharHealth;
-    public Text CharArmor;
+    public GameObject CharHealthObj;
+    private Text CharHealth;
+    public GameObject CharArmorObj;
+    private Text CharArmor;
+
+    public Text scorePanel;
 
     public GameObject CrossHair; 
 
@@ -27,22 +31,35 @@ public class Soldier : MonoBehaviour
 
     private base_bullet bulletScript;
 
+    private int score = 0;
+
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
         body = GetComponent<Rigidbody2D>();
+
+        CharHealth = CharHealthObj.GetComponent<Text>();
+        CharArmor = CharArmorObj.GetComponent<Text>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        CharHealthObj.transform.position = new Vector3(CharHealthObj.transform.position.x,CharHealthObj.transform.position.y,transform.position.z);
+
+        CharArmorObj.transform.position = new Vector3(CharArmorObj.transform.position.x,CharArmorObj.transform.position.y,transform.position.z);
+
         if (CharHealth != null){
             CharHealth.text = "Life: " + Math.Round(life, 0) + "%";
         }
         
         if (CharArmor != null){
             CharArmor.text = "Armor: " + Math.Round(armor, 0) + "%";
+        }
+
+        if (scorePanel != null){
+            scorePanel.text = "" + score + " kills";
         }
         
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -180,7 +197,13 @@ public class Soldier : MonoBehaviour
     }
 
     private void shoot(){
-        GameObject bullet_inner = Instantiate(bullet, transform.position, CrossHair.transform.rotation);
+        GameObject bullet_inner = Instantiate(bullet, new Vector3(transform.position.x + transform.localScale.x,transform.position.y, transform.position.z), CrossHair.transform.rotation);
+        float Zang = getBulletAngular();
+        bullet_inner.transform.eulerAngles = new Vector3(
+            bullet_inner.transform.eulerAngles.x,
+            bullet_inner.transform.eulerAngles.y,
+            Zang
+        );
         bulletScript = bullet_inner.GetComponent<base_bullet>();
         bulletScript.fire(transform.localScale.x);
         anim.Play("fire");
@@ -199,6 +222,35 @@ public class Soldier : MonoBehaviour
         return mousePositionLocal;
     }
 
+    private float getBulletAngular(){
+        double x = (double) CrossHair.transform.position.x;
+        double y = (double) CrossHair.transform.position.y - (double) transform.position.y;
+
+        Debug.Log("x:");
+        Debug.Log(x);
+        Debug.Log("y:");
+        Debug.Log(y);
+
+        double ang = Math.Acos((x*x)/(Math.Sqrt((x*x) + (y*y))*x));
+
+        if(y < 0 && (CrossHair.transform.position.x - transform.position.x) > 0){
+            ang = -ang;
+        }
+
+        if(y > 0 && (CrossHair.transform.position.x - transform.position.x) < 0){
+            ang = -ang;
+        }
+
+        Debug.Log("angulo:");
+        Debug.Log(ang);
+
+        return (float) ang;
+    }
+
+
+    public void scored(){
+        score += 1;
+    }
     public void getHited(float val){
 
         float exced;
