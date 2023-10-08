@@ -22,8 +22,6 @@ public class Soldier : MonoBehaviour
 
     public Text scorePanel;
 
-    public GameObject CrossHair; 
-
     public float CrossHairDistance;
 
     private Rigidbody2D body;
@@ -37,6 +35,10 @@ public class Soldier : MonoBehaviour
 
     private WeaponBarril weaponScript;
 
+    private GameObject UpperSide;
+
+    private GameObject LowerSide;
+
     private int score = 0;
 
     // Start is called before the first frame update
@@ -44,6 +46,11 @@ public class Soldier : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         body = GetComponent<Rigidbody2D>();
+
+        // Get Child lower and upper sides player
+        Transform[] ObjectChildrens = gameObject.GetComponentsInChildren<Transform>();
+        UpperSide = System.Array.Find(ObjectChildrens, p => p.gameObject.name == "UpperSide").gameObject;
+        LowerSide = System.Array.Find(ObjectChildrens, p => p.gameObject.name == "LowerSide").gameObject;
 
         CharHealth = CharHealthObj.GetComponent<Text>();
         CharArmor = CharArmorObj.GetComponent<Text>();
@@ -68,25 +75,6 @@ public class Soldier : MonoBehaviour
             scorePanel.text = "" + score + " kills";
         }
         
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        mousePosition.z = Camera.main.transform.position.z + Camera.main.nearClipPlane;
-
-        CrossHair.transform.position = moduloMouse(mousePosition);
-        
-        if(CrossHair.transform.position.x - transform.position.x < 0){
-
-            if(transform.localScale != new Vector3(-1, 1, 1)){
-                transform.localScale = new Vector3(-1, 1, 1);
-            }
-
-        }else if(CrossHair.transform.position.x - transform.position.x > 0){
-
-            if(transform.localScale != new Vector3(1, 1, 1)){
-                transform.localScale = new Vector3(1, 1, 1);
-            }
-        }
-
         if(armor < 100){
             armor += 0.02f;
         }
@@ -195,68 +183,22 @@ public class Soldier : MonoBehaviour
 
             transform.position = new Vector3(transform.position.x - walkSpeed, transform.position.y);
         }
-        // else if(Input.GetMouseButton(0)){
-        //     if(anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "fire"){
-        //         shoot();
-        //     }
-        // }
     }
 
-    public void shoot(){
-        Weapon = GameObject.FindGameObjectsWithTag("weapon")[0];
-
-        weaponScript = Weapon.GetComponent<WeaponBarril>();
-
-        var dir = CrossHair.transform.position - transform.position;
-        var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-
-        weaponScript.fire(angle);
-
-        anim.Play("fire");
+    public void playAnim(string value){
+        Debug.Log("Set animation "+value);
+        anim.Play(value);
     }
 
-    Vector3 moduloMouse(Vector3 mousePosition){
-
-        Vector3 mousePositionLocal = mousePosition;
-        Vector2 mouseRelativo = mousePositionLocal - transform.position;
-
-        float modulo = mouseRelativo.magnitude;
-        
-        if (modulo > CrossHairDistance)
-            mousePositionLocal = transform.position + (Vector3)(CrossHairDistance * mouseRelativo / modulo);
-        
-        return mousePositionLocal;
+    public string getAnim(){
+        Debug.Log("Get animation name");
+        return anim.GetCurrentAnimatorClipInfo(0)[0].clip.name;
     }
-
-    private float getBulletAngular(){
-        double x = (double) CrossHair.transform.position.x;
-        double y = (double) CrossHair.transform.position.y - (double) transform.position.y;
-
-        Debug.Log("x:");
-        Debug.Log(x);
-        Debug.Log("y:");
-        Debug.Log(y);
-
-        double ang = Math.Acos((x*x)/(Math.Sqrt((x*x) + (y*y))*x));
-
-        if(y < 0 && (CrossHair.transform.position.x - transform.position.x) > 0){
-            ang = -ang;
-        }
-
-        if(y > 0 && (CrossHair.transform.position.x - transform.position.x) < 0){
-            ang = -ang;
-        }
-
-        Debug.Log("angulo:");
-        Debug.Log(ang);
-
-        return (float) ang;
-    }
-
 
     public void scored(){
         score += 1;
     }
+    
     public void getHited(float val){
 
         float exced;

@@ -33,10 +33,14 @@ public class BaseWeapon : MonoBehaviour
     private WeaponBarril weaponScript;
 
     private GameObject CrossHair;
-
+    
     private GameObject Player;
 
     private Soldier player_script;
+
+    private GameObject UpperSide;
+
+    private UpperSide UpperSide_script;
 
     private bool reloading = false;
 
@@ -47,8 +51,21 @@ public class BaseWeapon : MonoBehaviour
 
         Player = GameObject.FindGameObjectsWithTag("player")[0];
 
+        Weapon = GameObject.FindGameObjectsWithTag("weapon")[0];
+
+        if(Weapon != null){
+            weaponScript = Weapon.GetComponent<WeaponBarril>();
+        }
+
         if(Player != null){
             player_script = Player.GetComponent<Soldier>();
+        }
+
+        Transform[] ObjectChildrens = Player.GetComponentsInChildren<Transform>();
+        UpperSide = System.Array.Find(ObjectChildrens, p => p.gameObject.name == "UpperSide").gameObject;
+
+        if(UpperSide != null){
+            UpperSide_script = UpperSide.GetComponent<UpperSide>();
         }
     }
 
@@ -58,7 +75,7 @@ public class BaseWeapon : MonoBehaviour
         var dir = CrossHair.transform.position - Player.transform.position;
         var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        // transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
         if (!esperaConcluida)
         {
@@ -111,9 +128,12 @@ public class BaseWeapon : MonoBehaviour
 
     public void fire()
     {   
+        var dir = CrossHair.transform.position - transform.position;
+        var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+
         if(mag_bullets > 0){
             reloading = false;
-            player_script.shoot();
+            weaponScript.fire(angle);
             mag_bullets -= 1;
         }else{
             reloading = true;
