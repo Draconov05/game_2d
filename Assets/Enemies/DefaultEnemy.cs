@@ -89,18 +89,6 @@ public class DefaultEnemy : MonoBehaviour
                     EnemyHealth.text = "" + Math.Round(life, 0) + "%";  
                 }
             }
-            
-            if (!esperaConcluida)
-            {
-                // Incrementa o tempo decorrido
-                tempoDecorrido += Time.deltaTime;
-
-                // Verifica se o tempo decorrido atingiu o tempo de espera desejado
-                if (tempoDecorrido >= tempoDeEspera)
-                {
-                    esperaConcluida = true;
-                }
-            }
 
             if(life <= 0){
                 if(anim != null){
@@ -113,7 +101,7 @@ public class DefaultEnemy : MonoBehaviour
                     died = true;
                     
                 }   
-            }else if(esperaConcluida && anim && anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "attack"){
+            }else if(anim && anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "attack" && anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "death_01" && anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "hurt"){
 
                 distance = Player.transform.position - transform.position;
 
@@ -199,6 +187,7 @@ public class DefaultEnemy : MonoBehaviour
         if(life > 0){
             if(col.gameObject.tag == "556"){
                 life -= 25;
+                anim.Play("hurt");
             }
         }
     }

@@ -9,14 +9,14 @@ public class CameraControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Player = GameObject.Find("Soldier");
+        Player = GameObject.Find("Soldier");
     }
 
     // Update is called once per frame
     void Update()
     {
         if (Player!= null){
-            transform.position=new Vector3(Player.transform.position.x, Player.transform.position.y);
+            transform.position=new Vector3(Player.transform.position.x, Player.transform.position.y, -10);
         }
         
 
