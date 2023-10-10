@@ -140,6 +140,9 @@ public class LowerSide : MonoBehaviour
             }
 
             player.transform.position = new Vector3(player.transform.position.x - walkSpeed, player.transform.position.y);
+            
         }
+        
+        Debug.Log(anim.GetCurrentAnimatorStateInfo(0));
     }
 }
