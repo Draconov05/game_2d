@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class DefaultEnemy : MonoBehaviour
 {
+    public GameObject moansObj;
+
     private GameObject WorldSettings;
 
     private WorldSettings WorldSettingsScript;
@@ -18,11 +20,11 @@ public class DefaultEnemy : MonoBehaviour
 
     private Soldier player_script;
 
-    private bool esperaConcluida = true;
+    private AudioSource[] moans;
 
-    private float tempoDecorrido = 0.0f;
+    private AudioSource moan;
 
-    private float tempoDeEspera = 2.0f;
+    private float selectedMoan = 0;
 
     private float life = 150;
     
@@ -37,6 +39,12 @@ public class DefaultEnemy : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if(moansObj){
+            moans = moansObj.GetComponents<AudioSource>();
+        }
+
+        selectedMoan = UnityEngine.Random.Range(0, 1);
+
         EnemyHealthObj = Instantiate(EnemyHealthObj, transform.position, transform.rotation);
 
         canva = GameObject.FindGameObjectsWithTag("canvaCamera")[0];
@@ -76,6 +84,13 @@ public class DefaultEnemy : MonoBehaviour
             }
         }
 
+        Debug.Log(moans);
+
+        if(moans != null){
+            moan = moans[(int) selectedMoan];
+        }
+        
+        moan.Play(0);
         
     }
 
@@ -101,7 +116,7 @@ public class DefaultEnemy : MonoBehaviour
                     died = true;
                     
                 }   
-            }else if(anim && anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "attack" && anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "death_01" && anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "hurt"){
+            }else if(anim != null && ( anim.GetCurrentAnimatorClipInfo(0).Length > 0 ) && anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "attack" && anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "death_01" && anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "hurt"){
 
                 distance = Player.transform.position - transform.position;
 
@@ -112,10 +127,6 @@ public class DefaultEnemy : MonoBehaviour
                         anim.Play("idle");
                     }
                     attack();
-
-                    tempoDeEspera = 1.5f;
-                    tempoDecorrido = 0.0f;
-                    esperaConcluida = false;
 
                 }else{
                     if(anim != null){

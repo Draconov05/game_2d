@@ -12,12 +12,9 @@ public class BaseWeapon : MonoBehaviour
     // public string caliber;
     // public int recuo;
     public List<string> fire_modes = new List<string>() { "single" };
-    // public int fire_rate;
+    public int fire_rate;
     public int mag_capacity = 30;
-    // private GameObject bullet;
-    // private Animation anim;
-    // public List<GameObject> mag_bullets = new List<GameObject>() {};
-
+    private Animator anim;
     public Text Mag;
 
     private bool esperaConcluida = true;
@@ -44,9 +41,24 @@ public class BaseWeapon : MonoBehaviour
 
     private bool reloading = false;
 
+    public AudioSource fireSound;
+
+    public AudioSource reloadSound;
+
+    public AudioSource emptySound;
+
     // Start is called before the first frame update
     void Start()
     {
+
+        anim = GetComponent<Animator>();
+
+        if(!fireSound) fireSound = GetComponent<AudioSource>();
+        
+        if(!reloadSound) reloadSound = GetComponent<AudioSource>();
+
+        if(!emptySound) emptySound = GetComponent<AudioSource>();
+
         CrossHair = GameObject.FindGameObjectsWithTag("crosshair")[0];
 
         Player = GameObject.FindGameObjectsWithTag("player")[0];
@@ -87,35 +99,42 @@ public class BaseWeapon : MonoBehaviour
             {
                 esperaConcluida = true;
             }
-        }
-
-        if (Input.GetMouseButtonDown(0) && player_script.Anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "fire")
-        {
-            fire();
-        }
-
-        if (Input.GetMouseButton(0))
-        {
-            if(fire_modes.Contains("auto")){
+        }else{
+             if (Input.GetMouseButtonDown(0))
+            {
                 fire();
-            }
-            
-        }else if(Input.GetKeyDown("r")){ //walk animation
-            reload();
-        }
-
-        if(esperaConcluida && reloading){
-            mag_bullets += 1;
-
-            if(mag_bullets >= mag_capacity){
-                reloading = false;
-                esperaConcluida = true;
-            }else{
                 esperaConcluida = false;
                 tempoDecorrido = 0.0f;
-                tempoDeEspera = 0.5f;
+                tempoDeEspera = 1/((float) fire_rate/60);
+            }
+
+            if (Input.GetMouseButton(0))
+            {
+                if(fire_modes.Contains("auto")){
+                    fire();
+                    esperaConcluida = false;
+                    tempoDecorrido = 0.0f;
+                    tempoDeEspera = 1/((float) fire_rate/60);
+                }
+                
+            }else if(Input.GetKeyDown("r")){ //walk animation
+                reload();
+            }
+
+            if(reloading){
+                mag_bullets = 30;
+                reloadSound.Play(0);
+                if(mag_bullets >= mag_capacity){
+                    reloading = false;
+                    esperaConcluida = true;
+                }else{
+                    esperaConcluida = false;
+                    tempoDecorrido = 0.0f;
+                    tempoDeEspera = 1.5f;
+                }
             }
         }
+        
         if(Mag != null){
             Mag.text = "" + mag_bullets + "/" + mag_capacity + " bullets";
         }
@@ -128,15 +147,20 @@ public class BaseWeapon : MonoBehaviour
 
     public void fire()
     {   
-        var dir = CrossHair.transform.position - transform.position;
-        var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-
         if(mag_bullets > 0){
             reloading = false;
-            weaponScript.fire(angle);
+            fireSound.Play(0);
+            if(UpperSide_script){
+                UpperSide_script.shoot();
+            }
+            anim.Play("fire");
+            weaponScript.fire();
             mag_bullets -= 1;
         }else{
-            reloading = true;
+            emptySound.Play(0);
+            esperaConcluida = false;
+            tempoDecorrido = 0.0f;
+            tempoDeEspera = 0.3f;
         }
     }
 

@@ -82,20 +82,15 @@ public class UpperSide : MonoBehaviour
             }
         }
 
-        if(Input.GetMouseButton(0)){
-            if(anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "fire"){
-                shoot();
-            }
-        }
+        // if(Input.GetMouseButton(0)){
+        //     if(anim.GetCurrentAnimatorClipInfo(0)[0].clip.name != "fire"){
+        //         shoot();
+        //     }
+        // }
         
     }
 
     public void shoot(){
-        WeaponBarril weaponScript = Weapon.GetComponent<WeaponBarril>();
-
-        var dir = CrossHair.transform.position - player.transform.position;
-        var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-
         anim.Play("fire");
     }
 
