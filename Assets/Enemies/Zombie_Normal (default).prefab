@@ -1386,7 +1386,7 @@ GameObject:
   - component: {fileID: 9063020816127454676}
   m_Layer: 0
   m_Name: Zombie_Normal (default)
-  m_TagString: Untagged
+  m_TagString: enemy_1
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1487,5 +1487,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6613949258fd9d642b9beaa30668d324, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 7090004361243610195, guid: cf0fda0ffc4d21744a2589fcf1a73eab, type: 3}
+  moansObj: {fileID: 7166865785644573211, guid: 586fb7a8fdd0a654d817a27ec161e3e5, type: 3}
   EnemyHealthObj: {fileID: 6090196314652563555, guid: 0b25fb130bba9654997ebbbb6687de30, type: 3}

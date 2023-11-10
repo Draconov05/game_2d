@@ -14,6 +14,8 @@ public class base_bullet : MonoBehaviour
     public float max_class_perfuration;
     private bool collided = false;
 
+    private float lifeTime = 0.0f;
+
     private float direction = 0;
 
     private float speed;
@@ -27,10 +29,16 @@ public class base_bullet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        lifeTime += Time.deltaTime;
+
         if(direction != 0){
             if(!collided){
                 transform.position += transform.right * speed;
             }
+        }
+
+        if(lifeTime >= 5.0f){
+            Destroy(gameObject);
         }
         
     }
@@ -41,8 +49,10 @@ public class base_bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        collided = true;
-        Destroy(gameObject);
+        if(col.gameObject.tag == "enemy_1"){
+            collided = true;
+            Destroy(gameObject);
+        }
     }
 
 }

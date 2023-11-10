@@ -9,7 +9,7 @@ public class EnemyRandomSpawn : MonoBehaviour
     private WorldSettings WorldSettingsScript;
 
     private Vector3 Min;
-    private  Vector3 Max;
+    private Vector3 Max;
 
     private bool esperaConcluida = true;
 
@@ -24,7 +24,7 @@ public class EnemyRandomSpawn : MonoBehaviour
     private  float _yAxis;
     private  float _zAxis; //If you need this, use it
 
-    private Vector3 _randomPosition ;
+    private Vector3 _randomPosition;
     public bool _canInstantiate = true;
 
     public GameObject Enemy;
